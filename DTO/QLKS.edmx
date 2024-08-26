@@ -1,0 +1,738 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MangeHotelModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="IdSatff" />
+          </Key>
+          <Property Name="IdSatff" Type="int" Nullable="false" />
+          <Property Name="Password" Type="nchar" MaxLength="400" />
+          <Property Name="Status" Type="nchar" MaxLength="10" />
+          <Property Name="Role" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Booking">
+          <Key>
+            <PropertyRef Name="IdBooking" />
+          </Key>
+          <Property Name="IdBooking" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdRoom" Type="int" />
+          <Property Name="IdCustomer" Type="int" />
+          <Property Name="IdCreater" Type="int" />
+          <Property Name="DateIn" Type="datetime" />
+          <Property Name="DateOut" Type="datetime" />
+          <Property Name="IdChange" Type="int" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="IdCustomer" />
+          </Key>
+          <Property Name="IdCustomer" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CCCD" Type="nchar" MaxLength="10" />
+          <Property Name="IsUse" Type="bit" />
+        </EntityType>
+        <EntityType Name="Invoice">
+          <Key>
+            <PropertyRef Name="IdInvoice" />
+          </Key>
+          <Property Name="IdInvoice" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdBooking" Type="int" />
+          <Property Name="Total" Type="float" />
+          <Property Name="IdCreater" Type="int" />
+          <Property Name="IsPaid" Type="bit" />
+        </EntityType>
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="CCCD" />
+          </Key>
+          <Property Name="CCCD" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="400" />
+          <Property Name="Phone" Type="nchar" MaxLength="10" />
+          <Property Name="Address" Type="nchar" MaxLength="400" />
+          <Property Name="Gender" Type="bit" />
+          <Property Name="Birth" Type="date" />
+        </EntityType>
+        <EntityType Name="Receptionist">
+          <Key>
+            <PropertyRef Name="IdReceptionist" />
+          </Key>
+          <Property Name="IdReceptionist" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CCCD" Type="nchar" MaxLength="10" />
+          <Property Name="Salary" Type="float" />
+          <Property Name="IsWork" Type="bit" />
+        </EntityType>
+        <EntityType Name="Room">
+          <Key>
+            <PropertyRef Name="IdRoom" />
+          </Key>
+          <Property Name="IdRoom" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NameRoom" Type="nchar" MaxLength="10" />
+          <Property Name="IdType" Type="int" />
+          <Property Name="IdBooking" Type="int" />
+        </EntityType>
+        <EntityType Name="Service">
+          <Key>
+            <PropertyRef Name="IdService" />
+          </Key>
+          <Property Name="IdService" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Cost" Type="float" />
+          <Property Name="IsUse" Type="bit" />
+        </EntityType>
+        <EntityType Name="TypeRoom">
+          <Key>
+            <PropertyRef Name="IdType" />
+          </Key>
+          <Property Name="IdType" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GuestsMax" Type="int" />
+          <Property Name="HourlyRate" Type="float" />
+          <Property Name="NameType" Type="nvarchar(max)" />
+          <Property Name="IsUse" Type="bit" />
+        </EntityType>
+        <EntityType Name="UseService">
+          <Key>
+            <PropertyRef Name="IdUseService" />
+          </Key>
+          <Property Name="IdUseService" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdBooking" Type="int" />
+          <Property Name="IdService" Type="int" />
+          <Property Name="Quantity" Type="int" />
+        </EntityType>
+        <Association Name="FK_Account_Receptionist">
+          <End Role="Receptionist" Type="Self.Receptionist" Multiplicity="1" />
+          <End Role="Account" Type="Self.Account" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Receptionist">
+              <PropertyRef Name="IdReceptionist" />
+            </Principal>
+            <Dependent Role="Account">
+              <PropertyRef Name="IdSatff" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Booking_Customer">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="Booking" Type="Self.Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="IdCustomer" />
+            </Principal>
+            <Dependent Role="Booking">
+              <PropertyRef Name="IdCustomer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Booking_Receptionist">
+          <End Role="Receptionist" Type="Self.Receptionist" Multiplicity="0..1" />
+          <End Role="Booking" Type="Self.Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Receptionist">
+              <PropertyRef Name="IdReceptionist" />
+            </Principal>
+            <Dependent Role="Booking">
+              <PropertyRef Name="IdCreater" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Booking_Room">
+          <End Role="Room" Type="Self.Room" Multiplicity="0..1" />
+          <End Role="Booking" Type="Self.Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room">
+              <PropertyRef Name="IdRoom" />
+            </Principal>
+            <Dependent Role="Booking">
+              <PropertyRef Name="IdRoom" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customer_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="0..1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="CCCD" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="CCCD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Invoice_Booking">
+          <End Role="Booking" Type="Self.Booking" Multiplicity="0..1" />
+          <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Booking">
+              <PropertyRef Name="IdBooking" />
+            </Principal>
+            <Dependent Role="Invoice">
+              <PropertyRef Name="IdBooking" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Invoice_Receptionist">
+          <End Role="Receptionist" Type="Self.Receptionist" Multiplicity="0..1" />
+          <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Receptionist">
+              <PropertyRef Name="IdReceptionist" />
+            </Principal>
+            <Dependent Role="Invoice">
+              <PropertyRef Name="IdCreater" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Receptionist_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="0..1" />
+          <End Role="Receptionist" Type="Self.Receptionist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="CCCD" />
+            </Principal>
+            <Dependent Role="Receptionist">
+              <PropertyRef Name="CCCD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Room_TypeRoom">
+          <End Role="TypeRoom" Type="Self.TypeRoom" Multiplicity="0..1" />
+          <End Role="Room" Type="Self.Room" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeRoom">
+              <PropertyRef Name="IdType" />
+            </Principal>
+            <Dependent Role="Room">
+              <PropertyRef Name="IdType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UseService_Booking">
+          <End Role="Booking" Type="Self.Booking" Multiplicity="0..1" />
+          <End Role="UseService" Type="Self.UseService" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Booking">
+              <PropertyRef Name="IdBooking" />
+            </Principal>
+            <Dependent Role="UseService">
+              <PropertyRef Name="IdBooking" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UseService_Service">
+          <End Role="Service" Type="Self.Service" Multiplicity="0..1" />
+          <End Role="UseService" Type="Self.UseService" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Service">
+              <PropertyRef Name="IdService" />
+            </Principal>
+            <Dependent Role="UseService">
+              <PropertyRef Name="IdService" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MangeHotelModelStoreContainer">
+          <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Booking" EntityType="Self.Booking" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Invoice" EntityType="Self.Invoice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Person" EntityType="Self.Person" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Receptionist" EntityType="Self.Receptionist" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Room" EntityType="Self.Room" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Service" EntityType="Self.Service" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TypeRoom" EntityType="Self.TypeRoom" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UseService" EntityType="Self.UseService" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Account_Receptionist" Association="Self.FK_Account_Receptionist">
+            <End Role="Receptionist" EntitySet="Receptionist" />
+            <End Role="Account" EntitySet="Account" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Booking_Customer" Association="Self.FK_Booking_Customer">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="Booking" EntitySet="Booking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Booking_Receptionist" Association="Self.FK_Booking_Receptionist">
+            <End Role="Receptionist" EntitySet="Receptionist" />
+            <End Role="Booking" EntitySet="Booking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Booking_Room" Association="Self.FK_Booking_Room">
+            <End Role="Room" EntitySet="Room" />
+            <End Role="Booking" EntitySet="Booking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customer_Person" Association="Self.FK_Customer_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Customer" EntitySet="Customer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Invoice_Booking" Association="Self.FK_Invoice_Booking">
+            <End Role="Booking" EntitySet="Booking" />
+            <End Role="Invoice" EntitySet="Invoice" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Invoice_Receptionist" Association="Self.FK_Invoice_Receptionist">
+            <End Role="Receptionist" EntitySet="Receptionist" />
+            <End Role="Invoice" EntitySet="Invoice" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Receptionist_Person" Association="Self.FK_Receptionist_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Receptionist" EntitySet="Receptionist" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Room_TypeRoom" Association="Self.FK_Room_TypeRoom">
+            <End Role="TypeRoom" EntitySet="TypeRoom" />
+            <End Role="Room" EntitySet="Room" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UseService_Booking" Association="Self.FK_UseService_Booking">
+            <End Role="Booking" EntitySet="Booking" />
+            <End Role="UseService" EntitySet="UseService" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UseService_Service" Association="Self.FK_UseService_Service">
+            <End Role="Service" EntitySet="Service" />
+            <End Role="UseService" EntitySet="UseService" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MangeHotelModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="IdSatff" />
+          </Key>
+          <Property Name="IdSatff" Type="Int32" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="400" FixedLength="true" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Role" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Receptionist" Relationship="Self.FK_Account_Receptionist" FromRole="Account" ToRole="Receptionist" />
+        </EntityType>
+        <EntityType Name="Booking">
+          <Key>
+            <PropertyRef Name="IdBooking" />
+          </Key>
+          <Property Name="IdBooking" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdRoom" Type="Int32" />
+          <Property Name="IdCustomer" Type="Int32" />
+          <Property Name="IdCreater" Type="Int32" />
+          <Property Name="DateIn" Type="DateTime" Precision="3" />
+          <Property Name="DateOut" Type="DateTime" Precision="3" />
+          <Property Name="IdChange" Type="Int32" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK_Booking_Customer" FromRole="Booking" ToRole="Customer" />
+          <NavigationProperty Name="Receptionist" Relationship="Self.FK_Booking_Receptionist" FromRole="Booking" ToRole="Receptionist" />
+          <NavigationProperty Name="Room" Relationship="Self.FK_Booking_Room" FromRole="Booking" ToRole="Room" />
+          <NavigationProperty Name="Invoices" Relationship="Self.FK_Invoice_Booking" FromRole="Booking" ToRole="Invoice" />
+          <NavigationProperty Name="UseServices" Relationship="Self.FK_UseService_Booking" FromRole="Booking" ToRole="UseService" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="IdCustomer" />
+          </Key>
+          <Property Name="IdCustomer" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CCCD" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="IsUse" Type="Boolean" />
+          <NavigationProperty Name="Bookings" Relationship="Self.FK_Booking_Customer" FromRole="Customer" ToRole="Booking" />
+          <NavigationProperty Name="Person" Relationship="Self.FK_Customer_Person" FromRole="Customer" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="Invoice">
+          <Key>
+            <PropertyRef Name="IdInvoice" />
+          </Key>
+          <Property Name="IdInvoice" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdBooking" Type="Int32" />
+          <Property Name="Total" Type="Double" />
+          <Property Name="IdCreater" Type="Int32" />
+          <Property Name="IsPaid" Type="Boolean" />
+          <NavigationProperty Name="Booking" Relationship="Self.FK_Invoice_Booking" FromRole="Invoice" ToRole="Booking" />
+          <NavigationProperty Name="Receptionist" Relationship="Self.FK_Invoice_Receptionist" FromRole="Invoice" ToRole="Receptionist" />
+        </EntityType>
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="CCCD" />
+          </Key>
+          <Property Name="CCCD" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="400" FixedLength="true" Unicode="true" />
+          <Property Name="Gender" Type="Boolean" />
+          <Property Name="Birth" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Customers" Relationship="Self.FK_Customer_Person" FromRole="Person" ToRole="Customer" />
+          <NavigationProperty Name="Receptionists" Relationship="Self.FK_Receptionist_Person" FromRole="Person" ToRole="Receptionist" />
+        </EntityType>
+        <EntityType Name="Receptionist">
+          <Key>
+            <PropertyRef Name="IdReceptionist" />
+          </Key>
+          <Property Name="IdReceptionist" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CCCD" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Salary" Type="Double" />
+          <Property Name="IsWork" Type="Boolean" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_Account_Receptionist" FromRole="Receptionist" ToRole="Account" />
+          <NavigationProperty Name="Bookings" Relationship="Self.FK_Booking_Receptionist" FromRole="Receptionist" ToRole="Booking" />
+          <NavigationProperty Name="Invoices" Relationship="Self.FK_Invoice_Receptionist" FromRole="Receptionist" ToRole="Invoice" />
+          <NavigationProperty Name="Person" Relationship="Self.FK_Receptionist_Person" FromRole="Receptionist" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="Room">
+          <Key>
+            <PropertyRef Name="IdRoom" />
+          </Key>
+          <Property Name="IdRoom" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameRoom" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="IdType" Type="Int32" />
+          <Property Name="IdBooking" Type="Int32" />
+          <NavigationProperty Name="Bookings" Relationship="Self.FK_Booking_Room" FromRole="Room" ToRole="Booking" />
+          <NavigationProperty Name="TypeRoom" Relationship="Self.FK_Room_TypeRoom" FromRole="Room" ToRole="TypeRoom" />
+        </EntityType>
+        <EntityType Name="Service">
+          <Key>
+            <PropertyRef Name="IdService" />
+          </Key>
+          <Property Name="IdService" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Cost" Type="Double" />
+          <Property Name="IsUse" Type="Boolean" />
+          <NavigationProperty Name="UseServices" Relationship="Self.FK_UseService_Service" FromRole="Service" ToRole="UseService" />
+        </EntityType>
+        <EntityType Name="TypeRoom">
+          <Key>
+            <PropertyRef Name="IdType" />
+          </Key>
+          <Property Name="IdType" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GuestsMax" Type="Int32" />
+          <Property Name="HourlyRate" Type="Double" />
+          <Property Name="NameType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsUse" Type="Boolean" />
+          <NavigationProperty Name="Rooms" Relationship="Self.FK_Room_TypeRoom" FromRole="TypeRoom" ToRole="Room" />
+        </EntityType>
+        <EntityType Name="UseService">
+          <Key>
+            <PropertyRef Name="IdUseService" />
+          </Key>
+          <Property Name="IdUseService" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdBooking" Type="Int32" />
+          <Property Name="IdService" Type="Int32" />
+          <Property Name="Quantity" Type="Int32" />
+          <NavigationProperty Name="Booking" Relationship="Self.FK_UseService_Booking" FromRole="UseService" ToRole="Booking" />
+          <NavigationProperty Name="Service" Relationship="Self.FK_UseService_Service" FromRole="UseService" ToRole="Service" />
+        </EntityType>
+        <Association Name="FK_Account_Receptionist">
+          <End Role="Receptionist" Type="Self.Receptionist" Multiplicity="1" />
+          <End Role="Account" Type="Self.Account" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Receptionist">
+              <PropertyRef Name="IdReceptionist" />
+            </Principal>
+            <Dependent Role="Account">
+              <PropertyRef Name="IdSatff" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Booking_Customer">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="Booking" Type="Self.Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="IdCustomer" />
+            </Principal>
+            <Dependent Role="Booking">
+              <PropertyRef Name="IdCustomer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Booking_Receptionist">
+          <End Role="Receptionist" Type="Self.Receptionist" Multiplicity="0..1" />
+          <End Role="Booking" Type="Self.Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Receptionist">
+              <PropertyRef Name="IdReceptionist" />
+            </Principal>
+            <Dependent Role="Booking">
+              <PropertyRef Name="IdCreater" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Booking_Room">
+          <End Role="Room" Type="Self.Room" Multiplicity="0..1" />
+          <End Role="Booking" Type="Self.Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room">
+              <PropertyRef Name="IdRoom" />
+            </Principal>
+            <Dependent Role="Booking">
+              <PropertyRef Name="IdRoom" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Invoice_Booking">
+          <End Role="Booking" Type="Self.Booking" Multiplicity="0..1" />
+          <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Booking">
+              <PropertyRef Name="IdBooking" />
+            </Principal>
+            <Dependent Role="Invoice">
+              <PropertyRef Name="IdBooking" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UseService_Booking">
+          <End Role="Booking" Type="Self.Booking" Multiplicity="0..1" />
+          <End Role="UseService" Type="Self.UseService" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Booking">
+              <PropertyRef Name="IdBooking" />
+            </Principal>
+            <Dependent Role="UseService">
+              <PropertyRef Name="IdBooking" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customer_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="0..1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="CCCD" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="CCCD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Invoice_Receptionist">
+          <End Role="Receptionist" Type="Self.Receptionist" Multiplicity="0..1" />
+          <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Receptionist">
+              <PropertyRef Name="IdReceptionist" />
+            </Principal>
+            <Dependent Role="Invoice">
+              <PropertyRef Name="IdCreater" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Receptionist_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="0..1" />
+          <End Role="Receptionist" Type="Self.Receptionist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="CCCD" />
+            </Principal>
+            <Dependent Role="Receptionist">
+              <PropertyRef Name="CCCD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Room_TypeRoom">
+          <End Role="TypeRoom" Type="Self.TypeRoom" Multiplicity="0..1" />
+          <End Role="Room" Type="Self.Room" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeRoom">
+              <PropertyRef Name="IdType" />
+            </Principal>
+            <Dependent Role="Room">
+              <PropertyRef Name="IdType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UseService_Service">
+          <End Role="Service" Type="Self.Service" Multiplicity="0..1" />
+          <End Role="UseService" Type="Self.UseService" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Service">
+              <PropertyRef Name="IdService" />
+            </Principal>
+            <Dependent Role="UseService">
+              <PropertyRef Name="IdService" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MangeHotelEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="Self.Account" />
+          <EntitySet Name="Bookings" EntityType="Self.Booking" />
+          <EntitySet Name="Customers" EntityType="Self.Customer" />
+          <EntitySet Name="Invoices" EntityType="Self.Invoice" />
+          <EntitySet Name="People" EntityType="Self.Person" />
+          <EntitySet Name="Receptionists" EntityType="Self.Receptionist" />
+          <EntitySet Name="Rooms" EntityType="Self.Room" />
+          <EntitySet Name="Services" EntityType="Self.Service" />
+          <EntitySet Name="TypeRooms" EntityType="Self.TypeRoom" />
+          <EntitySet Name="UseServices" EntityType="Self.UseService" />
+          <AssociationSet Name="FK_Account_Receptionist" Association="Self.FK_Account_Receptionist">
+            <End Role="Receptionist" EntitySet="Receptionists" />
+            <End Role="Account" EntitySet="Accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Booking_Customer" Association="Self.FK_Booking_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Booking" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Booking_Receptionist" Association="Self.FK_Booking_Receptionist">
+            <End Role="Receptionist" EntitySet="Receptionists" />
+            <End Role="Booking" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Booking_Room" Association="Self.FK_Booking_Room">
+            <End Role="Room" EntitySet="Rooms" />
+            <End Role="Booking" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Invoice_Booking" Association="Self.FK_Invoice_Booking">
+            <End Role="Booking" EntitySet="Bookings" />
+            <End Role="Invoice" EntitySet="Invoices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UseService_Booking" Association="Self.FK_UseService_Booking">
+            <End Role="Booking" EntitySet="Bookings" />
+            <End Role="UseService" EntitySet="UseServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customer_Person" Association="Self.FK_Customer_Person">
+            <End Role="Person" EntitySet="People" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Invoice_Receptionist" Association="Self.FK_Invoice_Receptionist">
+            <End Role="Receptionist" EntitySet="Receptionists" />
+            <End Role="Invoice" EntitySet="Invoices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Receptionist_Person" Association="Self.FK_Receptionist_Person">
+            <End Role="Person" EntitySet="People" />
+            <End Role="Receptionist" EntitySet="Receptionists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Room_TypeRoom" Association="Self.FK_Room_TypeRoom">
+            <End Role="TypeRoom" EntitySet="TypeRooms" />
+            <End Role="Room" EntitySet="Rooms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UseService_Service" Association="Self.FK_UseService_Service">
+            <End Role="Service" EntitySet="Services" />
+            <End Role="UseService" EntitySet="UseServices" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MangeHotelModelStoreContainer" CdmEntityContainer="MangeHotelEntities">
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="MangeHotelModel.Account">
+              <MappingFragment StoreEntitySet="Account">
+                <ScalarProperty Name="IdSatff" ColumnName="IdSatff" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Bookings">
+            <EntityTypeMapping TypeName="MangeHotelModel.Booking">
+              <MappingFragment StoreEntitySet="Booking">
+                <ScalarProperty Name="IdBooking" ColumnName="IdBooking" />
+                <ScalarProperty Name="IdRoom" ColumnName="IdRoom" />
+                <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
+                <ScalarProperty Name="IdCreater" ColumnName="IdCreater" />
+                <ScalarProperty Name="DateIn" ColumnName="DateIn" />
+                <ScalarProperty Name="DateOut" ColumnName="DateOut" />
+                <ScalarProperty Name="IdChange" ColumnName="IdChange" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="MangeHotelModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
+                <ScalarProperty Name="CCCD" ColumnName="CCCD" />
+                <ScalarProperty Name="IsUse" ColumnName="IsUse" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Invoices">
+            <EntityTypeMapping TypeName="MangeHotelModel.Invoice">
+              <MappingFragment StoreEntitySet="Invoice">
+                <ScalarProperty Name="IdInvoice" ColumnName="IdInvoice" />
+                <ScalarProperty Name="IdBooking" ColumnName="IdBooking" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="IdCreater" ColumnName="IdCreater" />
+                <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="People">
+            <EntityTypeMapping TypeName="MangeHotelModel.Person">
+              <MappingFragment StoreEntitySet="Person">
+                <ScalarProperty Name="CCCD" ColumnName="CCCD" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Birth" ColumnName="Birth" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Receptionists">
+            <EntityTypeMapping TypeName="MangeHotelModel.Receptionist">
+              <MappingFragment StoreEntitySet="Receptionist">
+                <ScalarProperty Name="IdReceptionist" ColumnName="IdReceptionist" />
+                <ScalarProperty Name="CCCD" ColumnName="CCCD" />
+                <ScalarProperty Name="Salary" ColumnName="Salary" />
+                <ScalarProperty Name="IsWork" ColumnName="IsWork" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rooms">
+            <EntityTypeMapping TypeName="MangeHotelModel.Room">
+              <MappingFragment StoreEntitySet="Room">
+                <ScalarProperty Name="IdRoom" ColumnName="IdRoom" />
+                <ScalarProperty Name="NameRoom" ColumnName="NameRoom" />
+                <ScalarProperty Name="IdType" ColumnName="IdType" />
+                <ScalarProperty Name="IdBooking" ColumnName="IdBooking" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Services">
+            <EntityTypeMapping TypeName="MangeHotelModel.Service">
+              <MappingFragment StoreEntitySet="Service">
+                <ScalarProperty Name="IdService" ColumnName="IdService" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="IsUse" ColumnName="IsUse" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TypeRooms">
+            <EntityTypeMapping TypeName="MangeHotelModel.TypeRoom">
+              <MappingFragment StoreEntitySet="TypeRoom">
+                <ScalarProperty Name="IdType" ColumnName="IdType" />
+                <ScalarProperty Name="GuestsMax" ColumnName="GuestsMax" />
+                <ScalarProperty Name="HourlyRate" ColumnName="HourlyRate" />
+                <ScalarProperty Name="NameType" ColumnName="NameType" />
+                <ScalarProperty Name="IsUse" ColumnName="IsUse" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UseServices">
+            <EntityTypeMapping TypeName="MangeHotelModel.UseService">
+              <MappingFragment StoreEntitySet="UseService">
+                <ScalarProperty Name="IdUseService" ColumnName="IdUseService" />
+                <ScalarProperty Name="IdBooking" ColumnName="IdBooking" />
+                <ScalarProperty Name="IdService" ColumnName="IdService" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
